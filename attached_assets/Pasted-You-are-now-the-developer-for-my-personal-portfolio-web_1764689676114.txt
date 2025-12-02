@@ -1,0 +1,71 @@
+You are now the developer for my personal portfolio website. 
+Create a fully polished, modern, responsive portfolio website using HTML, CSS, and JavaScript. 
+Follow these exact requirements:
+
+1. OVERALL DESIGN
+- Clean, modern, tech-looking UI (like Vercel, GitHub, Tailwind-style aesthetics).
+- Full-width hero section — must look like a proper website, NOT like a Word document.
+- Centered, balanced spacing, good padding/margins, not cramped.
+- Light/Dark mode toggle if easy.
+- Typography: clean, readable, evenly spaced.
+- Proper section separation using spacing, dividers, or background contrasts.
+
+2. SECTIONS TO INCLUDE (in this order):
+- HERO:
+  * My name: "Sahil Bhandari"
+  * Title: "Systems & Assembly Developer"
+  * Short tagline: “Low-level programming • OS internals • Performance-focused”
+
+- SKILLS:
+  Separate categories clearly (NOT all in one line):
+    * C Programming
+    * C++ Programming
+    * x86-64 Assembly (NASM)
+    * Low-Level Systems
+    * Reverse Engineering (beginner)
+    * Performance Optimization
+
+- REPOSITORIES:
+  Make separate blocks/cards for:
+    * C
+    * C++
+    * Assembly
+  Each card must have:
+    - Title
+    - Short description
+    - GitHub link placeholder
+
+- PROJECTS:
+  Add 3 placeholder projects with screenshots (use placeholder images), description, and demo links.
+
+- CONTACT:
+  Provide nice looking social buttons for:
+    GitHub, LinkedIn, Email
+
+3. LAYOUT STYLE:
+- Use a wide layout (max-width: 1400px).
+- Spacing similar to modern developer landing pages.
+- Cards with shadow, hover effects.
+- Smooth fade animations.
+- Use CSS only (no Tailwind unless I ask).
+- DO NOT make it look like a document.
+
+4. FILE STRUCTURE:
+Provide:
+- index.html
+- style.css
+- script.js
+
+5. REQUIREMENTS FOR CODE:
+- Clean, minimal, readable code.
+- Responsive for mobile and large screens.
+- Should run instantly on Replit without dependencies.
+- Use neutral color palette (blues/greys or dark black theme).
+- Avoid too much text — clean sections.
+
+6. FINAL OUTPUT:
+- Provide ALL three files completely.
+- Then provide a preview screenshot (if possible).
+- Make sure the website looks extremely polished and professional.
+
+Make sure the website looks like something a serious low-level developer would show for job applications.
