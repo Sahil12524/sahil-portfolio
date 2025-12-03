@@ -37,6 +37,12 @@ jobs:
           token: ${{ secrets.DEPLOY_TOKEN }}
           path: pages
 
+      - name: Preserve CNAME
+        run: |
+          if [ -f pages/CNAME ]; then
+            cp pages/CNAME publish/CNAME
+          fi
+
       - name: Deploy new build to GitHub Pages repo
         run: |
           rm -rf pages/*
