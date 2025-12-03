@@ -1,4 +1,4 @@
-name: Deploy Vite site to gh-pages
+name: Deploy Static Frontend to GitHub Pages
 
 on:
   push:
@@ -13,30 +13,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: ./client
-        run: npm ci
+        run: npm install
 
-      - name: Build project
-        working-directory: ./client
+      - name: Build project (server + frontend)
         run: npm run build
 
-      - name: Show dist for debugging
+      - name: Show built frontend (dist/public)
         run: |
-          echo "Dist folder content:"
-          ls -la ./client/dist
+          echo "Showing dist/public:"
+          ls -la dist/public || true
 
-      - name: Deploy to gh-pages
+      - name: Deploy static frontend to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./client/dist
+          publish_dir: dist/public
           publish_branch: gh-pages
