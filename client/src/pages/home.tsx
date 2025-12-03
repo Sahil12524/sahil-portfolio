@@ -1,8 +1,6 @@
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Github, 
-  Linkedin, 
-  Mail, 
   Terminal, 
   Cpu, 
   Code2, 
@@ -10,310 +8,360 @@ import {
   Wrench, 
   Zap,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Power,
+  Wifi,
+  Battery,
+  HardDrive,
+  Monitor
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 // Assets
-import heroBg from "@assets/generated_images/abstract_low-level_systems_programming_visualization_with_binary_code_and_glowing_circuits_in_dark_blue_and_grey.png";
-import project1 from "@assets/generated_images/modern_server_rack_architecture_visualization_in_dark_minimal_style.png";
-import project2 from "@assets/generated_images/abstract_geometric_shapes_representing_optimization_and_performance_in_dark_monochrome.png";
-import project3 from "@assets/generated_images/abstract_low-level_systems_programming_visualization_with_binary_code_and_glowing_circuits_in_dark_blue_and_grey.png"; // Reusing one for 3rd project
+import matrixBg from "@assets/generated_images/digital_rain_matrix_code_background_in_green_and_black.png";
+
+// Mock Boot Sequence Data
+const bootSequence = [
+  "BIOS DATE 01/09/98 14:22:52 VER: 08.00.15",
+  "CPU: INTEL(R) PENTIUM(R) II PROCESSOR",
+  "640K RAM SYSTEM... OK",
+  "INITIALIZING VIDEO ADAPTER... OK",
+  "CHECKING PERIPHERALS...",
+  "KEYBOARD DETECTED",
+  "MOUSE DETECTED",
+  "LOADING KERNEL...",
+  "MOUNTING FILESYSTEM [ROOT]...",
+  "SYSTEM READY."
+];
 
 export default function Home() {
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  };
-
-  const staggerContainer = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1
-      }
+  const [booted, setBooted] = useState(false);
+  const [bootIndex, setBootIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("overview");
+  
+  // Boot Animation Effect
+  useEffect(() => {
+    if (bootIndex < bootSequence.length) {
+      const timeout = setTimeout(() => {
+        setBootIndex(prev => prev + 1);
+      }, Math.random() * 300 + 100);
+      return () => clearTimeout(timeout);
+    } else {
+      const timeout = setTimeout(() => {
+        setBooted(true);
+      }, 800);
+      return () => clearTimeout(timeout);
     }
-  };
+  }, [bootIndex]);
+
+  if (!booted) {
+    return (
+      <div className="min-h-screen bg-black text-[#00ff00] font-mono p-8 flex flex-col justify-start items-start">
+        <div className="crt-overlay" />
+        <div className="crt-vignette" />
+        {bootSequence.slice(0, bootIndex).map((line, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-1"
+          >
+            {`> ${line}`}
+          </motion.div>
+        ))}
+        <div className="animate-blink mt-2">_</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-white/20">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-        {/* Background Texture */}
-        <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute inset-0 bg-linear-to-b from-background via-transparent to-background z-10" />
-          <img 
-            src={heroBg} 
-            alt="Background Texture" 
-            className="w-full h-full object-cover grayscale"
-          />
+    <div className="min-h-screen bg-background text-foreground font-mono selection:bg-[#00ff00] selection:text-black overflow-hidden flex flex-col">
+      {/* CRT Effects */}
+      <div className="crt-overlay" />
+      <div className="crt-vignette" />
+
+      {/* Background Matrix Effect */}
+      <div className="fixed inset-0 z-0 opacity-10 pointer-events-none">
+        <img 
+          src={matrixBg} 
+          alt="Matrix Background" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Top Status Bar */}
+      <header className="relative z-10 border-b border-[#004400] bg-black/90 p-2 flex justify-between items-center text-xs md:text-sm uppercase tracking-wider">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-2">
+            <Terminal className="w-4 h-4" />
+            root@sahil-dev:~#
+          </span>
         </div>
-
-        <motion.div 
-          className="relative z-10 max-w-4xl mx-auto space-y-8"
-          initial="initial"
-          animate="animate"
-          variants={staggerContainer}
-        >
-          <motion.div variants={fadeIn} className="space-y-2">
-            <h2 className="text-sm md:text-base font-mono text-muted-foreground tracking-widest uppercase">
-              Portfolio
-            </h2>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
-              Sahil Bhandari
-            </h1>
-          </motion.div>
-
-          <motion.div variants={fadeIn} className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-medium text-foreground/90">
-              Systems & Assembly Developer
-            </h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-mono">
-              Low-level programming • OS internals • Performance-focused
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeIn} className="flex gap-4 justify-center pt-8">
-            <Button variant="outline" size="lg" className="rounded-full px-8 border-white/10 hover:bg-white/5 hover:text-white transition-all group">
-              <Github className="mr-2 h-4 w-4" /> GitHub
-            </Button>
-            <Button variant="outline" size="lg" className="rounded-full px-8 border-white/10 hover:bg-white/5 hover:text-white transition-all">
-              <Linkedin className="mr-2 h-4 w-4" /> LinkedIn
-            </Button>
-            <Button variant="default" size="lg" className="rounded-full px-8 bg-white text-black hover:bg-white/90">
-              Contact Me
-            </Button>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div 
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted-foreground/50"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          <div className="w-[1px] h-16 bg-linear-to-b from-transparent via-muted-foreground/50 to-transparent" />
-        </motion.div>
-      </section>
-
-      {/* Skills Section */}
-      <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold tracking-tight">Technical Arsenal</h2>
-            <Separator className="flex-1 bg-white/10" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((category, idx) => (
-              <Card key={idx} className="bg-card/50 border-white/5 backdrop-blur-xs hover:border-white/10 transition-all duration-300 group">
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 rounded-md bg-white/5 text-white group-hover:bg-white/10 transition-colors">
-                      {category.icon}
-                    </div>
-                    <CardTitle className="font-mono text-lg">{category.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {category.items.map((item) => (
-                      <Badge key={item} variant="secondary" className="bg-secondary/50 hover:bg-secondary text-secondary-foreground/90 rounded-sm px-3 py-1 font-normal">
-                        {item}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Repositories Section */}
-      <section className="py-24 px-4 md:px-8 bg-white/[0.02] border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-12">
-            <Separator className="w-12 bg-white/10" />
-            <h2 className="text-3xl font-bold tracking-tight">Core Repositories</h2>
-            <Separator className="flex-1 bg-white/10" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {repos.map((repo, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <Card className="h-full flex flex-col bg-black border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-white/5">
-                  <CardHeader>
-                    <CardTitle className="font-mono text-xl flex items-center justify-between">
-                      {repo.title}
-                      <Code2 className="h-5 w-5 text-muted-foreground" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {repo.description}
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="ghost" className="w-full justify-between group hover:bg-white/5 text-muted-foreground hover:text-white">
-                      View Source <ExternalLink className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+        <div className="flex items-center gap-4 text-[#00aa00]">
+          <span className="flex items-center gap-1"><Wifi className="w-3 h-3" /> ONLINE</span>
+          <span className="flex items-center gap-1"><Battery className="w-3 h-3" /> 100%</span>
+          <span className="hidden md:inline">UPTIME: 4096h 12m</span>
         </div>
-      </section>
+      </header>
 
-      {/* Projects Section */}
-      <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-16">
-          <h2 className="text-3xl font-bold tracking-tight">Featured Projects</h2>
-          <Separator className="flex-1 bg-white/10" />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {projects.map((project, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.2 }}
-              className="group relative"
+      {/* Main Layout */}
+      <main className="flex-1 relative z-10 overflow-y-auto p-4 md:p-8 container mx-auto max-w-6xl">
+        
+        {/* Hero Section - Terminal Style */}
+        <section className="mb-16 border border-[#00ff00] bg-black/80 p-6 md:p-10 relative shadow-[0_0_15px_rgba(0,255,0,0.15)]">
+          <div className="absolute top-0 left-0 bg-[#00ff00] text-black px-2 py-1 text-xs font-bold">
+            ./WELCOME.sh
+          </div>
+          
+          <div className="space-y-4 mt-4">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl md:text-6xl font-bold text-shadow-glow"
             >
-              <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent z-10 pointer-events-none" />
-              <Card className="overflow-hidden bg-card border-0 h-full flex flex-col">
-                <div className="relative h-48 overflow-hidden">
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                </div>
-                <CardHeader className="relative z-20 -mt-12 pt-12 bg-linear-to-t from-background to-transparent">
-                  <CardTitle className="text-xl">{project.title}</CardTitle>
-                  <CardDescription className="font-mono text-xs text-primary/80 mt-2">
-                    {project.tech}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 relative z-20 bg-background">
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {project.description}
-                  </p>
-                </CardContent>
-                <CardFooter className="relative z-20 bg-background pt-0">
-                  <Button size="sm" className="w-full gap-2" variant="secondary">
-                    View Demo <ChevronRight className="h-3 w-3" />
-                  </Button>
-                </CardFooter>
-              </Card>
+              SAHIL BHANDARI
             </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-xl text-[#00cc00] flex items-center gap-2"
+            >
+              <span className="animate-blink">&gt;</span> Systems & Assembly Developer
+            </motion.div>
+
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="max-w-2xl text-[#00aa00] leading-relaxed"
+            >
+              Specializing in low-level programming, OS internals, and performance optimization. 
+              Bridging the gap between hardware and software.
+            </motion.p>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="pt-6 flex gap-4"
+            >
+              <Button variant="outline" className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none transition-all font-bold uppercase">
+                [ Initialize Contact ]
+              </Button>
+              <Button variant="ghost" className="text-[#00aa00] hover:text-[#00ff00] hover:bg-[#001100] rounded-none font-bold uppercase">
+                [ View Source ]
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-[#004400] mb-8 overflow-x-auto">
+          {["overview", "skills", "repositories", "projects"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-2 font-mono text-sm md:text-base uppercase tracking-widest transition-all
+                ${activeTab === tab 
+                  ? "bg-[#00ff00] text-black font-bold" 
+                  : "text-[#00aa00] hover:bg-[#001100] hover:text-[#00ff00]"}`}
+            >
+              {`./${tab}`}
+            </button>
           ))}
         </div>
-      </section>
 
-      {/* Contact Section */}
-      <section className="py-24 px-4 md:px-8 bg-secondary/10 border-t border-white/5">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl font-bold">Let's Connect</h2>
-          <p className="text-muted-foreground text-lg">
-            Always open to discussing low-level systems, performance optimization, 
-            and new opportunities in systems programming.
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-6">
-            <a href="#" className="group flex items-center gap-3 px-6 py-4 bg-background border border-white/10 rounded-lg hover:border-white/30 transition-all hover:-translate-y-1">
-              <Github className="h-6 w-6 text-foreground group-hover:scale-110 transition-transform" />
-              <span className="font-mono font-medium">GitHub</span>
-            </a>
-            <a href="#" className="group flex items-center gap-3 px-6 py-4 bg-background border border-white/10 rounded-lg hover:border-white/30 transition-all hover:-translate-y-1">
-              <Linkedin className="h-6 w-6 text-foreground group-hover:scale-110 transition-transform" />
-              <span className="font-mono font-medium">LinkedIn</span>
-            </a>
-            <a href="#" className="group flex items-center gap-3 px-6 py-4 bg-background border border-white/10 rounded-lg hover:border-white/30 transition-all hover:-translate-y-1">
-              <Mail className="h-6 w-6 text-foreground group-hover:scale-110 transition-transform" />
-              <span className="font-mono font-medium">Email Me</span>
-            </a>
-          </div>
+        {/* Content Area */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === "overview" && <OverviewSection />}
+            {activeTab === "skills" && <SkillsSection />}
+            {activeTab === "repositories" && <ReposSection />}
+            {activeTab === "projects" && <ProjectsSection />}
+          </motion.div>
+        </AnimatePresence>
 
-          <footer className="pt-16 text-sm text-muted-foreground/40 font-mono">
-            © 2025 Sahil Bhandari. Built with React & Tailwind.
-          </footer>
-        </div>
-      </section>
+        {/* Footer */}
+        <footer className="mt-20 pt-8 border-t border-[#004400] text-center text-[#006600] text-xs">
+          <p>SYSTEM_HALTED_SUCCESSFULLY. MEMORY_DUMP_SAVED.</p>
+          <p className="mt-2">© 2025 SAHIL BHANDARI. ALL RIGHTS RESERVED.</p>
+        </footer>
+      </main>
     </div>
   );
 }
 
-// Data Structures
-const skills = [
-  {
-    title: "Systems Programming",
-    icon: <Terminal className="h-5 w-5" />,
-    items: ["C Programming", "C++ Standards", "Memory Management", "Pointers & Refs"]
-  },
-  {
-    title: "Low-Level & Arch",
-    icon: <Cpu className="h-5 w-5" />,
-    items: ["x86-64 Assembly", "NASM", "Computer Architecture", "Instruction Sets"]
-  },
-  {
-    title: "Optimization & RE",
-    icon: <Wrench className="h-5 w-5" />,
-    items: ["Performance Tuning", "Reverse Engineering", "GDB Debugging", "Profiling Tools"]
-  }
-];
+// --- SECTIONS COMPONENTS ---
 
-const repos = [
-  {
-    title: "Kernel-C-Modules",
-    description: "A collection of custom Linux kernel modules written in C demonstrating character device drivers and memory allocation."
-  },
-  {
-    title: "CPP-Game-Engine",
-    description: "A lightweight 2D game engine built from scratch using C++17 and OpenGL, focusing on efficient memory pooling."
-  },
-  {
-    title: "ASM-Bootloader",
-    description: "A minimal 16-bit bootloader written in x86 Assembly that loads a basic kernel into protected mode."
-  }
-];
+function OverviewSection() {
+  return (
+    <div className="grid md:grid-cols-2 gap-8">
+      <div className="border border-[#004400] bg-black/50 p-6">
+        <h3 className="text-xl font-bold text-[#00ff00] mb-4 border-b border-[#004400] pb-2 flex items-center gap-2">
+          <HardDrive className="w-5 h-5" /> SYSTEM_STATS
+        </h3>
+        <ul className="space-y-3 text-[#00cc00]">
+          <li className="flex justify-between">
+            <span>ARCH:</span> <span>x86_64</span>
+          </li>
+          <li className="flex justify-between">
+            <span>KERNEL:</span> <span>Linux 6.8.0-custom</span>
+          </li>
+          <li className="flex justify-between">
+            <span>SHELL:</span> <span>ZSH 5.9</span>
+          </li>
+          <li className="flex justify-between">
+            <span>EDITOR:</span> <span>VIM 9.1</span>
+          </li>
+          <li className="flex justify-between">
+            <span>STATUS:</span> <span className="text-[#00ff00] animate-pulse">READY FOR WORK</span>
+          </li>
+        </ul>
+      </div>
 
-const projects = [
-  {
-    title: "Custom Memory Allocator",
-    tech: "C • Systems • Performance",
-    description: "Implemented a high-performance malloc/free replacement using segregated free lists and coalesce strategies, achieving 20% speedup over libc in specific workloads.",
-    image: project1
-  },
-  {
-    title: "Packet Sniffer & Analyzer",
-    tech: "C++ • Networking • Linux API",
-    description: "A raw socket packet analyzer that captures and decodes TCP/IP traffic in real-time, featuring a custom CLI interface for filtering packets.",
-    image: project2
-  },
-  {
-    title: "OS Scheduler Simulation",
-    tech: "C • Algorithms • OS Internals",
-    description: "A simulation of Round Robin and Completely Fair Scheduler algorithms, visualizing context switching overhead and process states.",
-    image: project3
-  }
-];
+      <div className="border border-[#004400] bg-black/50 p-6">
+        <h3 className="text-xl font-bold text-[#00ff00] mb-4 border-b border-[#004400] pb-2 flex items-center gap-2">
+          <Monitor className="w-5 h-5" /> CURRENT_FOCUS
+        </h3>
+        <p className="text-[#00cc00] mb-4">
+          Currently diving deep into kernel module development and exploring modern C++23 features for embedded systems.
+        </p>
+        <div className="bg-[#001100] p-3 border border-[#004400] font-mono text-xs text-[#00aa00]">
+          $ git commit -m "Optimized memory allocation strategy"<br/>
+          [master 8f3a2c1] Optimized memory allocation strategy<br/>
+           2 files changed, 45 insertions(+), 12 deletions(-)
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkillsSection() {
+  const skills = [
+    {
+      category: "LANGUAGES",
+      items: ["C", "C++", "x86 Assembly (NASM)", "Rust", "Python"]
+    },
+    {
+      category: "SYSTEMS",
+      items: ["Linux Kernel", "POSIX API", "Bootloaders", "Memory Management", "File Systems"]
+    },
+    {
+      category: "TOOLS",
+      items: ["GDB", "Valgrind", "Make/CMake", "Git", "Docker", "Wireshark"]
+    }
+  ];
+
+  return (
+    <div className="space-y-8">
+      {skills.map((skillGroup, idx) => (
+        <div key={idx} className="relative">
+          <h3 className="text-[#00ff00] font-bold mb-4 flex items-center gap-2">
+            <span className="text-[#006600]">[{idx + 1}]</span> {skillGroup.category}
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {skillGroup.items.map((item) => (
+              <div 
+                key={item}
+                className="border border-[#004400] bg-black/40 p-3 text-center hover:bg-[#00ff00] hover:text-black transition-colors cursor-default group"
+              >
+                <span className="group-hover:font-bold">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ReposSection() {
+  const repos = [
+    {
+      title: "kernel-c-modules",
+      lang: "C",
+      desc: "Custom Linux kernel modules demonstrating char drivers & memory alloc."
+    },
+    {
+      title: "cpp-game-engine",
+      lang: "C++",
+      desc: "Lightweight 2D engine using OpenGL with custom memory pooling."
+    },
+    {
+      title: "asm-bootloader",
+      lang: "Assembly",
+      desc: "Minimal 16-bit bootloader loading kernel into protected mode."
+    },
+    {
+      title: "net-sniffer",
+      lang: "C++",
+      desc: "Raw socket packet analyzer for TCP/IP traffic analysis."
+    }
+  ];
+
+  return (
+    <div className="grid md:grid-cols-2 gap-6">
+      {repos.map((repo, idx) => (
+        <div key={idx} className="border border-[#004400] bg-black/60 p-5 hover:border-[#00ff00] transition-colors group">
+          <div className="flex justify-between items-start mb-3">
+            <h4 className="text-lg font-bold text-[#00ff00] group-hover:underline decoration-2 underline-offset-4">
+              {repo.title}
+            </h4>
+            <Badge variant="outline" className="border-[#006600] text-[#00aa00] rounded-none text-xs">
+              {repo.lang}
+            </Badge>
+          </div>
+          <p className="text-[#00aa00] text-sm mb-4 h-10">{repo.desc}</p>
+          <div className="flex justify-end">
+            <Button size="sm" variant="ghost" className="text-[#006600] hover:text-[#00ff00] hover:bg-transparent p-0 h-auto">
+              &lt;git_clone&gt; <ExternalLink className="ml-2 w-3 h-3" />
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProjectsSection() {
+  return (
+    <div className="space-y-12">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="flex flex-col md:flex-row gap-6 border-l-2 border-[#004400] pl-6 hover:border-[#00ff00] transition-colors">
+          <div className="md:w-1/3 aspect-video bg-[#001100] border border-[#004400] flex items-center justify-center relative overflow-hidden group">
+             {/* Placeholder for project image - using CSS pattern instead of images for raw feel */}
+             <div className="absolute inset-0 bg-[linear-gradient(45deg,#002200_1px,transparent_1px),linear-gradient(-45deg,#002200_1px,transparent_1px)] bg-[size:20px_20px] opacity-50" />
+             <Binary className="w-16 h-16 text-[#004400] group-hover:text-[#00ff00] transition-colors" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-2xl font-bold text-[#00ff00] mb-2">PROJECT_ALPHA_v{i}.0</h3>
+            <div className="flex gap-2 mb-4 text-xs">
+              <span className="bg-[#002200] text-[#00aa00] px-2 py-1">PERFORMANCE</span>
+              <span className="bg-[#002200] text-[#00aa00] px-2 py-1">SYSTEMS</span>
+            </div>
+            <p className="text-[#00cc00] mb-4">
+              Advanced implementation of memory-safe data structures in C without standard library dependencies. 
+              Features a custom garbage collector and referenced counting pointers.
+            </p>
+            <Button variant="outline" className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none h-8 text-xs">
+              [ EXECUTE DEMO ]
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
