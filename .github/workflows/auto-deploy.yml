@@ -1,0 +1,49 @@
+name: Auto Deploy to GitHub Pages Repo
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout portfolio repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the site
+        run: npm run build
+
+      - name: Prepare publish folder
+        run: |
+          rm -rf publish
+          mkdir publish
+          cp -r dist/public/* publish/
+
+      - name: Checkout GitHub Pages repo
+        uses: actions/checkout@v4
+        with:
+          repository: Sahil12524/sahil12524.github.io
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          path: pages
+
+      - name: Deploy new build to GitHub Pages repo
+        run: |
+          rm -rf pages/*
+          cp -r publish/* pages/
+          cd pages
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-deploy from sahil-portfolio" || echo "No changes"
+          git push
