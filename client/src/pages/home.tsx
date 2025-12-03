@@ -13,7 +13,12 @@ import {
   Wifi,
   Battery,
   HardDrive,
-  Monitor
+  Monitor,
+  Youtube,
+  Mail,
+  Github,
+  MessageSquare,
+  DollarSign
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +29,7 @@ import { Badge } from "@/components/ui/badge";
 // Assets
 import matrixBg from "@assets/generated_images/digital_rain_matrix_code_background_in_green_and_black.png";
 
-// Mock Boot Sequence Data
+// Boot Sequence Data
 const bootSequence = [
   "BIOS DATE 01/09/98 14:22:52 VER: 08.00.15",
   "CPU: INTEL(R) PENTIUM(R) II PROCESSOR",
@@ -150,14 +155,25 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              className="pt-6 flex gap-4"
+              className="pt-6 flex flex-wrap gap-4"
             >
-              <Button variant="outline" className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none transition-all font-bold uppercase">
-                [ Initialize Contact ]
+              <Button 
+                variant="outline" 
+                asChild
+                className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none transition-all font-bold uppercase"
+              >
+                <a href="mailto:sahilshailu7977460287@gmail.com">
+                  [ Initialize Contact ]
+                </a>
               </Button>
-              <Button variant="ghost" className="text-[#00aa00] hover:text-[#00ff00] hover:bg-[#001100] rounded-none font-bold uppercase">
-                [ View Source ]
-              </Button>
+              
+              {/* Social Links */}
+              <div className="flex items-center gap-2 ml-auto md:ml-4">
+                <SocialButton href="https://youtube.com/@Sahil_Bhandari" icon={<Youtube className="w-5 h-5" />} label="YouTube" />
+                <SocialButton href="https://discord.com/invite/rgJrCWfQ9u" icon={<MessageSquare className="w-5 h-5" />} label="Discord" />
+                <SocialButton href="https://github.com/Sahil12524" icon={<Github className="w-5 h-5" />} label="GitHub" />
+                <SocialButton href="https://razorpay.me/@Sahil12524" icon={<DollarSign className="w-5 h-5" />} label="Donate" />
+              </div>
             </motion.div>
           </div>
         </section>
@@ -204,6 +220,20 @@ export default function Home() {
   );
 }
 
+function SocialButton({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) {
+  return (
+    <a 
+      href={href} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="p-2 text-[#00aa00] hover:text-[#00ff00] hover:bg-[#001100] transition-colors border border-transparent hover:border-[#004400]"
+      title={label}
+    >
+      {icon}
+    </a>
+  );
+}
+
 // --- SECTIONS COMPONENTS ---
 
 function OverviewSection() {
@@ -218,13 +248,13 @@ function OverviewSection() {
             <span>ARCH:</span> <span>x86_64</span>
           </li>
           <li className="flex justify-between">
-            <span>KERNEL:</span> <span>Linux 6.8.0-custom</span>
+            <span>KERNEL:</span> <span>Windows NT / Linux</span>
           </li>
           <li className="flex justify-between">
-            <span>SHELL:</span> <span>ZSH 5.9</span>
+            <span>SHELL:</span> <span>PowerShell / Bash</span>
           </li>
           <li className="flex justify-between">
-            <span>EDITOR:</span> <span>VIM 9.1</span>
+            <span>EDITOR:</span> <span>VS Code / VIM</span>
           </li>
           <li className="flex justify-between">
             <span>STATUS:</span> <span className="text-[#00ff00] animate-pulse">READY FOR WORK</span>
@@ -237,12 +267,12 @@ function OverviewSection() {
           <Monitor className="w-5 h-5" /> CURRENT_FOCUS
         </h3>
         <p className="text-[#00cc00] mb-4">
-          Currently diving deep into kernel module development and exploring modern C++23 features for embedded systems.
+          Currently focused on creating high-quality educational content for low-level programming and building system utilities for Windows.
         </p>
         <div className="bg-[#001100] p-3 border border-[#004400] font-mono text-xs text-[#00aa00]">
-          $ git commit -m "Optimized memory allocation strategy"<br/>
-          [master 8f3a2c1] Optimized memory allocation strategy<br/>
-           2 files changed, 45 insertions(+), 12 deletions(-)
+          $ git commit -m "Added WinUI 3 cleanup tool"<br/>
+          [master 8f3a2c1] Added WinUI 3 cleanup tool<br/>
+           2 files changed, 150 insertions(+), 12 deletions(-)
         </div>
       </div>
     </div>
@@ -253,15 +283,15 @@ function SkillsSection() {
   const skills = [
     {
       category: "LANGUAGES",
-      items: ["C", "C++", "x86 Assembly (NASM)", "Rust", "Python"]
+      items: ["C", "C++", "C#", "x86 Assembly (NASM)", "Python", "VB .NET"]
     },
     {
       category: "SYSTEMS",
-      items: ["Linux Kernel", "POSIX API", "Bootloaders", "Memory Management", "File Systems"]
+      items: ["Windows Internals", "Win32 API", "WinUI 3", "Docker"]
     },
     {
       category: "TOOLS",
-      items: ["GDB", "Valgrind", "Make/CMake", "Git", "Docker", "Wireshark"]
+      items: ["GDB", "Make/CMake", "Git", "Visual Studio", "MSYS2"]
     }
   ];
 
@@ -291,55 +321,86 @@ function SkillsSection() {
 function ReposSection() {
   const repos = [
     {
-      title: "kernel-c-modules",
-      lang: "C",
-      desc: "Custom Linux kernel modules demonstrating char drivers & memory alloc."
-    },
-    {
-      title: "cpp-game-engine",
-      lang: "C++",
-      desc: "Lightweight 2D engine using OpenGL with custom memory pooling."
-    },
-    {
-      title: "asm-bootloader",
+      title: "nasm-x86_64-windows-cheatsheets",
       lang: "Assembly",
-      desc: "Minimal 16-bit bootloader loading kernel into protected mode."
+      desc: "Comprehensive cheat sheets for x86_64 Assembly on Windows.",
+      link: "https://github.com/Sahil12524/nasm-x86_64-windows-cheatsheets"
     },
     {
-      title: "net-sniffer",
+      title: "Cpp_Tutorial",
       lang: "C++",
-      desc: "Raw socket packet analyzer for TCP/IP traffic analysis."
+      desc: "C++ and Assembly Win32 only. (Msys2 + NASM).",
+      link: "https://github.com/Sahil12524/Cpp_Tutorial"
+    },
+    {
+      title: "C_Tutorial",
+      lang: "C",
+      desc: "Basic C programming covering most of the things for beginners and revision.",
+      link: "https://github.com/Sahil12524/C_Tutorial"
+    },
+    {
+      title: "Minecraft-Launch-Script-VB-WinForms",
+      lang: "VB .NET",
+      desc: "Minecraft Bedrock Edition For Windows Trial Bypass.",
+      link: "https://github.com/Sahil12524/Minecraft-Launch-Script-VB-WinForms"
+    },
+    {
+      title: "Windows_Cleanup_WinUI_3",
+      lang: "C#",
+      desc: "Makes your Windows PC smooths and faster built on WinUI 3.",
+      link: "https://github.com/Sahil12524/Windows_Cleanup_WinUI_3_Fail"
+    },
+    {
+      title: "pihole-doh-wireguard",
+      lang: "Docker",
+      desc: "Self-hosted privacy stack: Pi-hole, Cloudflared (DoH), and WireGuard.",
+      link: "https://github.com/Sahil12524/pihole-doh-wireguard"
     }
   ];
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {repos.map((repo, idx) => (
-        <div key={idx} className="border border-[#004400] bg-black/60 p-5 hover:border-[#00ff00] transition-colors group">
+        <a 
+          key={idx} 
+          href={repo.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="border border-[#004400] bg-black/60 p-5 hover:border-[#00ff00] transition-colors group block"
+        >
           <div className="flex justify-between items-start mb-3">
-            <h4 className="text-lg font-bold text-[#00ff00] group-hover:underline decoration-2 underline-offset-4">
+            <h4 className="text-lg font-bold text-[#00ff00] group-hover:underline decoration-2 underline-offset-4 break-all">
               {repo.title}
             </h4>
-            <Badge variant="outline" className="border-[#006600] text-[#00aa00] rounded-none text-xs">
+            <Badge variant="outline" className="border-[#006600] text-[#00aa00] rounded-none text-xs whitespace-nowrap ml-2">
               {repo.lang}
             </Badge>
           </div>
-          <p className="text-[#00aa00] text-sm mb-4 h-10">{repo.desc}</p>
+          <p className="text-[#00aa00] text-sm mb-4 min-h-[2.5rem]">{repo.desc}</p>
           <div className="flex justify-end">
             <Button size="sm" variant="ghost" className="text-[#006600] hover:text-[#00ff00] hover:bg-transparent p-0 h-auto">
               &lt;git_clone&gt; <ExternalLink className="ml-2 w-3 h-3" />
             </Button>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );
 }
 
 function ProjectsSection() {
+  const projects = [
+    {
+      title: "Linked List Implementation",
+      tags: ["DSA", "C"],
+      desc: "Ready to use Linked List implementation in C. Part of the C Tutorial series covering Data Structures and Algorithms.",
+      link: "https://github.com/Sahil12524/C_Tutorial/tree/main/DSA/Linked_List"
+    }
+  ];
+
   return (
     <div className="space-y-12">
-      {[1, 2, 3].map((i) => (
+      {projects.map((project, i) => (
         <div key={i} className="flex flex-col md:flex-row gap-6 border-l-2 border-[#004400] pl-6 hover:border-[#00ff00] transition-colors">
           <div className="md:w-1/3 aspect-video bg-[#001100] border border-[#004400] flex items-center justify-center relative overflow-hidden group">
              {/* Placeholder for project image - using CSS pattern instead of images for raw feel */}
@@ -347,17 +408,23 @@ function ProjectsSection() {
              <Binary className="w-16 h-16 text-[#004400] group-hover:text-[#00ff00] transition-colors" />
           </div>
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-[#00ff00] mb-2">PROJECT_ALPHA_v{i}.0</h3>
+            <h3 className="text-2xl font-bold text-[#00ff00] mb-2">{project.title}</h3>
             <div className="flex gap-2 mb-4 text-xs">
-              <span className="bg-[#002200] text-[#00aa00] px-2 py-1">PERFORMANCE</span>
-              <span className="bg-[#002200] text-[#00aa00] px-2 py-1">SYSTEMS</span>
+              {project.tags.map(tag => (
+                <span key={tag} className="bg-[#002200] text-[#00aa00] px-2 py-1">{tag}</span>
+              ))}
             </div>
             <p className="text-[#00cc00] mb-4">
-              Advanced implementation of memory-safe data structures in C without standard library dependencies. 
-              Features a custom garbage collector and referenced counting pointers.
+              {project.desc}
             </p>
-            <Button variant="outline" className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none h-8 text-xs">
-              [ EXECUTE DEMO ]
+            <Button 
+              variant="outline" 
+              asChild
+              className="border-[#00ff00] text-[#00ff00] hover:bg-[#00ff00] hover:text-black rounded-none h-8 text-xs"
+            >
+              <a href={project.link} target="_blank" rel="noopener noreferrer">
+                [ ACCESS_SOURCE ]
+              </a>
             </Button>
           </div>
         </div>
