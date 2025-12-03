@@ -1,4 +1,4 @@
-name: Deploy Vite Site to GitHub Pages
+name: Deploy Vite Site to GitHub Pages (debug-friendly)
 
 on:
   push:
@@ -14,29 +14,67 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  # If your vite project lives in a subfolder like "client", set PROJECT_DIR="client"
+  # If your vite project is at repo root, set PROJECT_DIR="."
+  PROJECT_DIR: client
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    outputs:
+      dist_path: ${{ steps.set-dist.outputs.dist_path }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
+      - name: Enter project dir
+        run: |
+          echo "Project dir = $PROJECT_DIR"
+          ls -la $PROJECT_DIR || true
+
       - name: Install dependencies
-        run: npm install
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm ci
 
       - name: Build the project
+        working-directory: ${{ env.PROJECT_DIR }}
         run: npm run build
 
-      - name: Upload build artifacts
+      - name: Show build output (debug)
+        run: |
+          echo "Listing root:"
+          ls -la
+          echo "Listing project dir:"
+          ls -la $PROJECT_DIR
+          echo "Looking for dist:"
+          if [ -d "$PROJECT_DIR/dist" ]; then echo "FOUND: $PROJECT_DIR/dist"; ls -la $PROJECT_DIR/dist; else echo "NOT FOUND: $PROJECT_DIR/dist"; fi
+        shell: bash
+
+      - name: Set dist path output
+        id: set-dist
+        run: |
+          if [ -d "$PROJECT_DIR/dist" ]; then
+            echo "dist_path=$PROJECT_DIR/dist" >> $GITHUB_OUTPUT
+          elif [ -d "./dist" ]; then
+            echo "dist_path=./dist" >> $GITHUB_OUTPUT
+          else
+            echo "dist_path=" >> $GITHUB_OUTPUT
+            echo "No dist folder found" >&2
+            exit 1
+          fi
+
+      - name: Upload build artifacts for Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ${{ steps.set-dist.outputs.dist_path }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,7 +82,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
